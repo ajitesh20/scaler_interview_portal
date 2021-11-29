@@ -62,23 +62,53 @@ app.post('/create',upload.single('candidateResume'),(req,res) => {
         }})
         .then(data => {
             if(data){
-                res.send({
+                res.render('result',{
                     status: false,
                     message: 'Interview already exists'
                 });
             } else {
                 InterviewDetails.create(createData).then(data => {
-                    res.send({
+                    res.render('result',{
                         status: true,
                         message: 'Interview created successfully'
                     });
                 })}})
             .catch(err => {
-                    res.send({
+                    res.render('result',{
                         status: false,
                         message: 'Error while creating interview'
                     });
                 });
+});
+
+app.post('/update/:id',upload.single('candidateResume'),(req,res) => {
+    let createData = {
+      id: req.params.id,
+      interviewer: req.body.interviewerName,
+      interviewer_email: req.body.interviewerEmail,
+      candidate: req.body.candidateName,
+      candidate_email: req.body.candidateEmail,
+      startTime : new Date(req.body.startTime),
+      endTime : new Date(req.body.endTime),
+      resume: (req.file==undefined?'NULL':req.file.path)
+  };
+
+InterviewDetails.update(createData,{
+    where: {
+        id: createData.id
+    }
+})
+.then(data => {
+    res.render('result',{
+        status: true,
+        message: 'Interview updated successfully'
+})})
+.catch(err => {
+        res.render('result',{
+            status: false,
+            message: 'Error while updating interview'
+        });
+})
 });
 
 app.get('/upcoming',(req,res) => {
@@ -89,14 +119,33 @@ app.get('/upcoming',(req,res) => {
             }
         }
     }).then((data) => {
-        res.send(data);
+        res.render('upcoming',{userData: data});
     });
 });
 
-sequelize.sync({force: true})
+app.get('/public/resumes/:file',(req,res) => {
+    res.sendFile(path.join(__dirname,'public\\resumes',req.params.file));
+});
+
+app.get('/users/edit/:id',(req,res) => {
+    InterviewDetails.findOne({
+        where: {
+            id: req.params.id
+        }
+    })
+    .then((data) => {
+        data.oper = 'update/'+data.id;
+        res.render('edit',{data: data});
+    })
+    .catch((err) => { 
+        console.log(err);
+    })
+});
+
+sequelize.sync()
     .then(() => {
         console.log('Model was synchronized');
         app.listen(PORT,() => {
             console.log('server started at port '+PORT)
         })
-    });
+});
