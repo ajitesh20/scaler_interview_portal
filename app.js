@@ -5,6 +5,8 @@ const path = require('path');
 const InterviewDetails = require('./interview_details');
 const PORT = (process.env.PORT||8000);
 const multer = require('multer');
+const {Op} = require('sequelize');
+const ejs = require('ejs');
 const multerStorage = multer.diskStorage({
     destination: (req, file, cb) => {
       cb(null, "public");
@@ -32,26 +34,62 @@ const multerFilter = (req, file, cb) => {
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.static(path.join(__dirname,'public')));
+app.set('view engine', 'ejs');
 
 app.get('/',(req,res) => {
-    res.sendFile(__dirname + '/public/index.html');
+    res.render('index');
 });
 
 app.get('/create',(req,res) => {
-    res.sendFile(__dirname + '/public/create.html');
+    res.render('create');
 });
 
 app.post('/create',upload.single('candidateResume'),(req,res) => {
-    InterviewDetails.create({
-        interviewer: req.body.interviewerName,
-        interviewer_email: req.body.interviewerEmail,
-        candidate: req.body.candidateName,
-        candidate_email: req.body.candidateEmail,
-        startTime : req.body.startTime,
-        endTime : req.body.endTime,
-        resume: req.file.path
+    let createData = {
+      interviewer: req.body.interviewerName,
+      interviewer_email: req.body.interviewerEmail,
+      candidate: req.body.candidateName,
+      candidate_email: req.body.candidateEmail,
+      startTime : new Date(req.body.startTime),
+      endTime : new Date(req.body.endTime),
+      resume: (req.file==undefined?'NULL':req.file.path)
+  };
+
+    InterviewDetails.findOne({
+        where: {
+            [Op.or]: [{interviewer: createData.interviewer},{candidate: createData.candidate}],
+            [Op.and]: [{startTime: {[Op.lte]: createData.endTime}},{endTime: {[Op.gte]: createData.startTime}}]
+        }})
+        .then(data => {
+            if(data){
+                res.send({
+                    status: false,
+                    message: 'Interview already exists'
+                });
+            } else {
+                InterviewDetails.create(createData).then(data => {
+                    res.send({
+                        status: true,
+                        message: 'Interview created successfully'
+                    });
+                })}})
+            .catch(err => {
+                    res.send({
+                        status: false,
+                        message: 'Error while creating interview'
+                    });
+                });
+});
+
+app.get('/upcoming',(req,res) => {
+    InterviewDetails.findAll({
+        where: {
+            startTime: {
+                [Op.gt]: new Date()
+            }
+        }
     }).then((data) => {
-        res.sendFile(__dirname+'\\'+data.resume);
+        res.send(data);
     });
 });
 

@@ -5,8 +5,8 @@ let InterviewDetails = sequelize.define('InterviewDetails', {
     interviewer_email: DataTypes.STRING,
     candidate: DataTypes.STRING,
     candidate_email: DataTypes.STRING,
-    startTime: DataTypes.TIME,
-    endTime: DataTypes.TIME,
+    startTime: DataTypes.DATE,
+    endTime: DataTypes.DATE,
     resume: DataTypes.STRING
 });
 
