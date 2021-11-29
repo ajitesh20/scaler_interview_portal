@@ -1,0 +1,67 @@
+<body>
+  <% if(data.oper) { %>
+    <form method="post" enctype="multipart/form-data" action="/<%=data.oper%>">
+      <% } else { %>
+    <form method="post" enctype="multipart/form-data" action="/create">
+      <% } %>
+        <div class="form-group">
+            <label for="interviewerName">Interviewer Full Name</label>
+            <% if(data.interviewer) { %>
+                <input type="text" class="form-control" id="interviewerName" aria-describedby="emailHelp" placeholder="Enter Full Name" name="interviewerName" value="<%=data.interviewer%>">
+            <% } else { %>
+                <input type="text" class="form-control" id="interviewerName" aria-describedby="emailHelp" placeholder="Enter Full Name" name="interviewerName">
+            <% } %>
+        </div>
+        <div class="form-group">
+          <label for="interviewerInputEmail">Interviewer Email Address</label>
+          <% if(data.interviewer_email) { %>
+            <input type="email" class="form-control" id="interviewerInputEmail" aria-describedby="emailHelp" placeholder="Enter email" name="interviewerEmail" value="<%=data.interviewer_email%>">
+        <% } else { %>
+          <input type="email" class="form-control" id="interviewerInputEmail" aria-describedby="emailHelp" placeholder="Enter email" name="interviewerEmail">
+        <% } %>
+        </div>
+        <div class="form-group">
+            <label for="candidateName">Candidate Full Name</label>
+            <% if(data.candidate) { %>
+                <input type="text" class="form-control" id="candidateName" aria-describedby="emailHelp" placeholder="Enter Full Name" name="candidateName" value="<%=data.candidate%>">
+            <% } else { %>
+                <input type="text" class="form-control" id="candidateName" aria-describedby="emailHelp" placeholder="Enter Full Name" name="candidateName">
+            <% } %>
+        </div>
+        <div class="form-group">
+          <label for="candidateInputEmail">Candidate Email Address</label>
+          <% if(data.candidate_email) { %>
+            <input type="email" class="form-control" id="candidateInputEmail" aria-describedby="emailHelp" placeholder="Enter email" name="candidateEmail" value="<%=data.candidate_email%>"> 
+        <% } else { %>
+          <input type="email" class="form-control" id="candidateInputEmail" aria-describedby="emailHelp" placeholder="Enter email" name="candidateEmail"> 
+        <% } %>
+        </div>
+        <div>
+            <label for="startTime">Interview Start Time:</label>
+            <% if(data.startTime) { %>
+                <input type="datetime-local" id="startTime" name="startTime" value="<%=data.startTime%>"> 
+            <% } else { %>
+                <input type="datetime-local" id="startTime" name="startTime">
+            <% } %>
+        </div>
+        <div>
+            <label for="endTime">Interview End Time:</label>
+            <% if(data.endTime) { %>
+                <input type="datetime-local" id="endTime" name="endTime" value="<%=data.endTime%>">
+            <% } else { %>
+                <input type="datetime-local" id="endTime" name="endTime">
+            <% } %>
+        </div>
+        <div class="form-group">
+          <label for="exampleFormControlFile1">Candidate Resume</label>
+          <% if(data.resume) { %>
+            <input type="file" class="form-control-file" id="exampleFormControlFile1" name="resume" value="<%=data.resume%>">
+        <% } else { %>
+          <input type="file" class="form-control-file" id="exampleFormControlFile1" name="resume">
+        <% } %>
+        </div>
+        <div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+  </body>

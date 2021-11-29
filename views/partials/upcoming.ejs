@@ -1,0 +1,41 @@
+<body>
+    <div class="table-data">
+<h2>Upcoming Interviews</h2>
+    <table border="1">
+        <tr>
+            <th>S.No</th>
+            <th>Interviewer Name</th>
+            <th>Interviewer Email</th>
+            <th>Candidate Name</th>
+            <th>Candidate Email</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>View Resume</th>
+            <th>Edit</th>
+        </tr>
+        
+        <%
+        if(userData.length!=0){
+        var i=1;
+        userData.forEach(function(data){
+        %>
+        <tr>
+            <td><%=i; %></td>
+            <td><%=data.interviewer %></td>
+            <td><%=data.interviewer_email %></td>
+            <td><%=data.candidate %></td>
+            <td><%=data.candidate_email %></td>
+            <td><%=data.startTime %></td>
+            <td><%=data.endTime %></td>
+            <td><a href="<%=data.resume %>">View</a></td>
+            <td><a href="/users/edit/<%=data.id%>">Edit</a></td>
+        </tr>
+        <%  i++; }) %>
+        <% } else{ %>
+            <tr>
+                <td colspan="7">No Interview Scheduled</td>
+            </tr>
+        <% } %>
+    </table>
+    </div>
+</body>
