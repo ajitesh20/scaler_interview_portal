@@ -44,7 +44,7 @@ app.get('/create',(req,res) => {
     res.render('create');
 });
 
-app.post('/create',upload.single('candidateResume'),(req,res) => {
+app.post('/create',upload.single('resume'),(req,res) => {
     let createData = {
       interviewer: req.body.interviewerName,
       interviewer_email: req.body.interviewerEmail,
@@ -81,7 +81,7 @@ app.post('/create',upload.single('candidateResume'),(req,res) => {
                 });
 });
 
-app.post('/update/:id',upload.single('candidateResume'),(req,res) => {
+app.post('/update/:id',upload.single('resume'),(req,res) => {
     let createData = {
       id: req.params.id,
       interviewer: req.body.interviewerName,
@@ -142,7 +142,7 @@ app.get('/users/edit/:id',(req,res) => {
     })
 });
 
-sequelize.sync()
+sequelize.sync({force:true})
     .then(() => {
         console.log('Model was synchronized');
         app.listen(PORT,() => {
